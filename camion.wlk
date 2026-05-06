@@ -18,9 +18,10 @@ object camion {
 	}
 	
 	method estaExcedido() {
-	  if (self.pesoTotal() > 2500){
+	  return self.pesoTotal() > 2500
+	  /* if (self.pesoTotal() > 2500){
 		self.error("El peso esta Excedido")
-	  }
+	  } */
 	}
 		
 	// CARGA Y DESCARGA
@@ -64,6 +65,43 @@ object camion {
 
 	//PELIGROSIDAD
 	method tienePeligrosidadCon(peligrosidad) {
-	  return cosas.any({ unaCosa => unaCosa.peligrosidad() == peligrosidad})
+	  return cosas.find({ unaCosa => unaCosa.peligrosidad() == peligrosidad})
+	}
+
+	//COSAS PELIGROSAS
+	method cosasPeligrosas(peligrosidad) {
+	  return cosas.filter({ unaCosa => unaCosa.peligrosidad() > peligrosidad})
+	}
+
+	method masPeligrosoQue(cosaPeligrosa) {
+	  return cosas.filter({unaCosa => unaCosa.peligrosidad() > cosaPeligrosa.peligrosidad()})
+	}
+
+	//PUEDE CIRCULAR EN RUTA
+	method puedeCicularRuta(peligrosidadMaxima) {
+	  return !self.estaExcedido() && self.todasSonSegurasDe(peligrosidadMaxima)
+	}
+	method todasSonSegurasDe(peligrosidad) {
+	  return cosas.all({ unaCosa => unaCosa.peligrosidad() <= peligrosidad})
+	}
+
+	//TIENE ALGO QUE PESA ENTRE DOS VALORES
+	method tieneAlgoQuePesaEntre(min, max) {
+	  return cosas.any( {unaCosa => unaCosa.peso().between(min, max)} )
+	}
+
+	//COSA MAS PESADA
+	method cosaMasPesada() {
+	  return cosas.max({unaCosa => unaCosa.peso()})
+	}
+
+	//PESOS DE TODAS LAS COSAS
+	method pesosDeLasCosas() {
+	  return cosas.map({unaCosa => unaCosa.peso()})
+	}
+
+	//TOTAL DE BULTOS
+	method totalBultos() {
+	  return cosas.sum({ unaCosa => unaCosa.bultos() })
 	}
 }
