@@ -104,4 +104,58 @@ object camion {
 	method totalBultos() {
 	  return cosas.sum({ unaCosa => unaCosa.bultos() })
 	}
+
+	//ACCIDENTE
+	method accidente() {
+	  self.cosas().forEach({unaCosa => unaCosa.accidente()})
+	}
+
+	//TRASNPORTE
+	method puedeTrasnportar(destino, camino) {
+	  return camino.puedeCircular(self)
+	}
+
+
+	method transportar(destino, camino) {
+	  if (camino.puedeCircular(self)){
+		destino.depositarCosasDe(self)
+		self.cosas().clear()
+		
+	  }else{
+		self.error("no puede cirular por " + camino.toString() + " ya que no cumple con los requisitos")
+	  }
+	}
+}
+
+object almacen {
+  const almacen = #{}
+
+  method cargar(unCosa) {
+	almacen.add(unCosa)
+  }
+
+  method almacen() {
+	return almacen
+  }
+
+  method depositarCosasDe(transporte) {
+	almacen.addAll(transporte.cosas())
+  }
+}
+
+object ruta9 {
+
+  const peligrosidadMaxima = 20
+
+  method puedeCircular(transporte) {
+	return transporte.puedeCicularRuta(peligrosidadMaxima)
+  }
+}
+
+object caminosVecinales {
+
+	var property pesoMaximo = 2500
+  method puedeCircular(transporte) {
+	return transporte.pesoTotal() <= pesoMaximo
+  }
 }

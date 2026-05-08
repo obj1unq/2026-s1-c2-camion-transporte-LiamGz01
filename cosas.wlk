@@ -9,6 +9,9 @@ object knightRider {
 	}
 	method bultos() = 1
 	//method nivelPeligrosidad() { return 10 }
+	method accidente() {
+	  
+	}
 }
 
 object arenaGranel {
@@ -21,6 +24,10 @@ object arenaGranel {
   }
 
   method bultos() = 1
+
+  method accidente() {
+	peso = peso + 20
+  }
 }
 
 object bumblebee {
@@ -37,6 +44,14 @@ object bumblebee {
   }
 
   method bultos() = 2
+
+  method accidente() {
+	if (modoAuto){
+		modoAuto = false
+	}else{
+		modoAuto = true
+	}
+  }
 }
 
 object paqueteLadrillos {
@@ -58,6 +73,10 @@ object paqueteLadrillos {
 	}else{
 		3
 	}
+  }
+
+  method accidente() {
+	cantLadrillos = (cantLadrillos - 12).max(0)
   }
 }
 
@@ -87,6 +106,12 @@ object bateriaAntiaerea {
 		1
 	}
   }
+
+  method accidente() {
+	if (hayMisiles){
+		hayMisiles = false
+	}
+  }
 }
 
 object residuosRadiactivos {
@@ -97,12 +122,20 @@ object residuosRadiactivos {
   } 
 
   method bultos() = 1
+
+  method accidente() {
+	peso = peso + 15
+  }
 }
 
 // MAS COSAS
 object contenedorPortuario {
   const peso = 100
   const carga = #{} 
+
+  method carga() {
+	return carga
+  }
 
   method cargar(cosa) {
 	carga.add(cosa)
@@ -130,6 +163,11 @@ object contenedorPortuario {
   method bultos() {
 	return 1 + carga.sum({ c => c.bultos() })
   }
+
+  method accidente() {
+	self.carga().forEach({c => c.accidente()})
+	//afectar a todas las cosas de carga
+  }
 }
 
 object embalajeSeguridad {
@@ -144,6 +182,9 @@ object embalajeSeguridad {
   }
 
   method bultos() = 2
+  method accidente() {
+	
+  }
 }
 
 

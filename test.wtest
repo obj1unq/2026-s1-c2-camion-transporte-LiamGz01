@@ -152,4 +152,80 @@ describe "Camion de Transporte" {
     camion.cargar(arenaGranel)
     assert.equals(4, camion.totalBultos())
   }
+
+  test "accidente caso 1" {
+    camion.cargar(contenedorPortuario)
+    contenedorPortuario.cargar(knightRider)
+    contenedorPortuario.cargar(bumblebee)
+    camion.cargar(embalajeSeguridad)
+    embalajeSeguridad.cargaEnvuelta(residuosRadiactivos)
+    residuosRadiactivos.peso(30)
+    camion.cargar(arenaGranel)
+    arenaGranel.peso(50)
+    camion.cargar(paqueteLadrillos)
+    paqueteLadrillos.cantLadrillos(100)
+    camion.cargar(bateriaAntiaerea)
+    camion.accidente()
+    assert.notThat(bumblebee.modoAuto())
+    assert.equals(30, residuosRadiactivos.peso())
+    assert.equals(70, arenaGranel.peso())
+    assert.equals(88, paqueteLadrillos.cantLadrillos())
+    assert.notThat(bateriaAntiaerea.hayMisiles())
+
+  }
+
+  test "accidente caso 2" {
+    camion.cargar(bumblebee)
+    bumblebee.modoAuto(false)
+    camion.cargar(residuosRadiactivos)
+    residuosRadiactivos.peso(30)
+    camion.cargar(paqueteLadrillos)
+    paqueteLadrillos.cantLadrillos(10)
+    camion.cargar(bateriaAntiaerea)
+    bateriaAntiaerea.hayMisiles(false)
+    camion.accidente()
+    assert.that(bumblebee.modoAuto())
+    assert.equals(45, residuosRadiactivos.peso())
+    assert.equals(0, paqueteLadrillos.cantLadrillos())
+    assert.notThat(bateriaAntiaerea.hayMisiles())
+  }
+
+  test "Caso: ruta 9 exitoso" {
+    almacen.cargar(knightRider)
+    almacen.cargar(residuosRadiactivos)
+
+    camion.cargar(bumblebee)
+    camion.cargar(arenaGranel)
+    arenaGranel.peso(50)
+    camion.transportar(almacen, ruta9)
+    assert.equals(#{knightRider, residuosRadiactivos, bumblebee, arenaGranel}, almacen.almacen())
+    assert.equals(#{}, camion.cosas())
+  }
+
+  test "Caso: ruta 9 fallido por peligrosidad" {
+    bumblebee.modoAuto(false)
+    almacen.cargar(knightRider)
+    almacen.cargar(residuosRadiactivos)
+
+  }
 }  
+
+
+
+
+
+
+
+/* ##### Caso 2
+Suponiendo que el camión tiene:
+- Bumblebee en modo robot.
+- 30 kg de residuos radiactivos. 
+- Un paquete de 10 ladrillos.
+- La batería antiaérea descargada.  
+
+Al producirse un accidente:
+- Bumblebee queda en modo auto.
+- Residuos radiactivos quedan con 45 kg de peso.
+- El paquete de ladrillos queda con 0 ladrillos.
+- La batería antiaérea queda descargada.
+ */  
